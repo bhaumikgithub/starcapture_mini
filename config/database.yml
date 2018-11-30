@@ -78,8 +78,8 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  <<: *default
-  database: starcapture_mini_production
-  username: starcapture_mini
-  password: <%= ENV['STARCAPTURE_MINI_DATABASE_PASSWORD'] %>
+# production:
+#   <<: *default
+#   database: starcapture_mini_production
+#   username: starcapture_mini
+#   password: <%= ENV['STARCAPTURE_MINI_DATABASE_PASSWORD'] %>
