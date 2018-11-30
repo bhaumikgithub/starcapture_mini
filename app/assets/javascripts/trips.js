@@ -124,9 +124,9 @@ function getDirection() {
           for(let i = 0; i < distance.length; i++){
             $('.distance')[0].value = ''
             $('.time')[0].value = ''
-            if(distance[i] != undefined && distance.length > 1)
+            if(distance[i] != undefined || distance.length > 1)
               $('.distance')[i+1].value = distance[i]
-            if(duration[i] != undefined && duration.length > 1)
+            if(duration[i] != undefined || duration.length > 1)
               $('.time')[i+1].value = convertTime(duration[i])
           }
         }
