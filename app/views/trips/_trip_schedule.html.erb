@@ -56,7 +56,7 @@
         <div class="position-absolute back-button-wrap">
           <%= link_to 'back',trips_path, class: 'btn btn-light' %>
         </div>
-        <% if @trip.present? %>
+        <% if @trip.persisted? %>
           <div class="position-absolute share-button-wrap">
             <%= link_to 'Share' "#", data: {toggle: "modal", target: "#exampleModal"} do %>
               <i class="fa fa-share-alt-square" style="font-size: 32px; color: white"></i>
