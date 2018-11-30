@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>StarcaptureMini</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+     <script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAimpQrqnB_pftBReNA94ZGYc7HPXYbqPw&libraries=places,visualization,geometry&sensor=false"
+      type="text/javascript"></script>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <section>
+      <div class="container-fluid p-0">
+        <% if user_signed_in? %>
+          <div class="row m-0">
+              <div class="col-12 p-0">
+                <div class="wrapper">
+                  <%= render 'layouts/sidebar' %>
+                   <div class="main-content align-top">
+                      <%= render 'layouts/header' %>
+                      <p class="notice m-0 p-0"><%= notice %></p>
+                      <p class="alert m-0 p-0"><%= alert %></p>
+                      <%= yield %>
+                   </div>
+                </div>
+              </div>
+            </div>
+        <% else %>
+          <p class="notice m-0 p-0"><%= notice %></p>
+          <p class="alert m-0 p-0"><%= alert %></p>
+          <%= yield %>
+        <% end %>
+      </div>
+    </section>
+  </body>
+</html>

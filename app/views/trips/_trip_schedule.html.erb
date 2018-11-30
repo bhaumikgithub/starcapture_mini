@@ -1,0 +1,134 @@
+<div class="row m-0 trip_schedules">
+  <div class="col-12 p-0">
+    <div id="wrapper">
+      <div id="sidebar-wrapper">
+        <%= form_for @trip do |f| %>
+          <div class="name_desc_block pl-3 pr-3">
+            <div class="d-inline-block w-100">
+              <label class="d-bock w-20">Name</label>
+              <%= f.text_field :name, class: "custom-width-input ",  :required => true %>
+            </div>
+            <div class="w-100 d-inline-block">
+              <label class="d-bock w-20">Description</label>
+              <%= f.text_field :description, class: "custom-width-input", :required => true %>
+            </div>
+          </div>
+          <div id="destination-stop-wrapper" class="list-group">
+            <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.order(:position) do |ff| %>                
+              <div class="destination-info-wrap d-flex">
+                <div class="block time-wrap d-inline-flex">
+                  <%= ff.time_field :time, class: 'w-100 time', id: ff.object.id %>
+                </div>
+                <div class="block destination-name d-inline-flex">
+                  <div class="d-flex align-items-center">
+                    <%= ff.text_field :place, class: 'place_search', id: ff.object.id %>
+                  </div>
+                </div>
+                <div class="block hour-list d-inline-flex">
+                  <%= ff.text_field :distance, class: 'distance' , id: ff.object.id%>
+                </div>
+                <div class="remove-icon-wrap">
+                  <%= ff.remove_nested_fields_link class: 'remove_blocks' do %>
+                    <i class="fa fa-times text-white remove"></i>
+                  <% end %>
+                </div>
+                <div class="drag_handle">
+                  <span><i class="fa fa-arrows-alt fa-xs text-white f-17"></i></span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <%= f.add_nested_fields_link :trip_schedules, class: 'add-destination-block text-white d-flex' do %>
+            <div class="d-inline-flex">
+              <div href="javascript:void(0)" class="add-destination-wrap">
+                <i class="fa fa-plus-circle">
+                </i>
+              </div>
+            </div>
+            <div class="d-inline-flex">
+              Add Destination
+            </div>
+          <% end %>
+          <div class="save-location-btn pl-3 pt-2">
+            <%= f.submit 'save', class: 'location-save' %>
+          </div>
+        <% end %>
+        <div class="position-absolute back-button-wrap">
+          <%= link_to 'back',trips_path, class: 'btn btn-light' %>
+        </div>
+        <% if @trip.present? %>
+          <div class="position-absolute share-button-wrap">
+            <%= link_to 'Share' "#", data: {toggle: "modal", target: "#exampleModal"} do %>
+              <i class="fa fa-share-alt-square" style="font-size: 32px; color: white"></i>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div id="page-content-wrapper">
+        <a href class="btn btn-primary route-sidebarmenu" data-toggle="sidebar">
+          <i class="fa fa-chevron-right"> </i>
+        </a>
+        <div class="row h-100 m-0">
+          <div class="col-12 h-100 p-0">
+            <div class="map-wrap h-100">
+              <div id="map"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Share</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+        <span id="bar"><%= request.url %></span>
+        <div class="float-right">
+          <button class="clipboard-btn" data-clipboard-action="copy" data-clipboard-target="#bar">
+            <i class="fa fa-copy"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){  
+    var clipboard = new Clipboard('.clipboard-btn');
+    initMap()
+    getPlaces()
+  });
+  $(function() {
+    var sortIndex = {};
+    $( "#destination-stop-wrapper" ).sortable({
+      start: function(e, ui) {
+      },
+      update: function(e, ui) {
+        $( "#destination-stop-wrapper" ).find('.time').each(function(index){
+          if(this.id){
+            sortIndex[index] = this.id
+          }
+        });
+        if(Object.keys(sortIndex).length > 0){
+          var request = $.ajax({
+            url: "<%= params[:id].present? ? trip_path(params[:id]) : ''%>",
+            type: "PUT",
+            data: {data: sortIndex},
+            dataType: "html"
+          });
+        }
+        getDirection()
+      }
+    })
+  });
+</script>  

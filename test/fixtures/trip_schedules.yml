@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  time: 2018-11-19 15:10:40
+  place: MyText
+  distance: 1.5
+  position: 
+
+two:
+  time: 2018-11-19 15:10:40
+  place: MyText
+  distance: 1.5
+  position: 

@@ -1,0 +1,38 @@
+<div class="row m-0">
+  <div class="col-12 p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
+        <a class="navbar-brand" href="#">Itenaries</a>
+        <div class="ml-auto">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+              <a href="#" class="nav-link d-inline-block align-middle add-icon-wrap">
+                <i class="fa fa-plus-square-o"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <div class="d-inline-block align-middle">
+                <span class="">
+                  Hi, <%= current_user.email %>
+                </span>
+                <span class=""></span>
+              </div>
+            </li>
+            <li class="list-inline-item nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                  role="button" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                <span class="d-inline-block thumb-wrap">
+                  <%= letter_avatar_tag( current_user.email, Time.now.to_i, class: "avatar" ) %>
+                </span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">My Profile</a>
+                <%= link_to 'Change Password', edit_user_registration_path, class: 'dropdown-item' %>
+                <%= link_to 'Logout', destroy_user_session_path, :method=>'delete', class: 'dropdown-item' %>
+              </div>
+            </li>
+          </ul>
+        </div>
+    </nav>
+  </div>
+</div>
