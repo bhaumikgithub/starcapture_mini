@@ -6,7 +6,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/sign_up
   def new
-    session[:trip] =request.referrer&.split('/')&.last 
+    if (params[:sharable] == 'true')
+      session[:trip] =request.referrer&.split('/')&.last 
+    end
     super
   end
 
@@ -14,7 +16,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
     resource.save
-    if (session[:trip])
+    if (session[:trip] && resource.present?)
       trip = Trip.find_by(id: session[:trip])
       trip_schedules = trip.trip_schedules
       trip_dup = trip.dup
@@ -26,6 +28,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         ts.updated_at = Time.now
         ts.save!
       end
+      session[:trip] = ''
     end
     yield resource if block_given?
     if resource.persisted?

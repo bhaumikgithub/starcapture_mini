@@ -31,7 +31,7 @@ class TripsController < ApplicationController
         redirect_to trips_path
       end
     else
-      redirect_to new_user_registration_path, notice: "You need to signup."
+      redirect_to new_user_registration_path(:sharable => true), notice: "You need to signup."
     end
   end
 
