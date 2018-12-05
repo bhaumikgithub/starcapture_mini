@@ -38,6 +38,9 @@
               </div>
             <% end %>
           </div>
+          <div class="ml-3 text-white">
+            <span class='total_display'></span>
+          </div>
           <%= f.add_nested_fields_link :trip_schedules, class: 'add-destination-block text-white d-flex' do %>
             <div class="d-inline-flex">
               <div href="javascript:void(0)" class="add-destination-wrap">
@@ -50,19 +53,20 @@
             </div>
           <% end %>
           <div class="save-location-btn pl-3 pt-2">
-            <%= f.submit 'save', class: 'location-save' %>
+            <%= f.submit 'Save', class: 'location-save btn-success' %>
           </div>
         <% end %>
         <div class="position-absolute back-button-wrap">
-          <%= link_to 'back',trips_path, class: 'btn btn-light' %>
+          <%= link_to 'Back',trips_path, class: 'btn btn-light' %>
         </div>
         <% if @trip.persisted? %>
           <div class="position-absolute share-button-wrap">
-            <%= link_to 'Share' "#", data: {toggle: "modal", target: "#exampleModal"} do %>
+            <%= link_to 'Share' "#", data: {toggle: "modal", target: "#exampleModal"}, class: 'share' do %>
               <i class="fa fa-share-alt-square" style="font-size: 32px; color: white"></i>
             <% end %>
           </div>
         <% end %>
+        
       </div>
       <div id="page-content-wrapper">
         <a href class="btn btn-primary route-sidebarmenu" data-toggle="sidebar">
@@ -108,6 +112,29 @@
     initMap()
     getPlaces()
   });
+  $('[data-toggle="sidebar"]').click(function (e) {
+  e.preventDefault();
+  $("#wrapper").toggleClass("toggled");
+  if ($("#wrapper").hasClass("toggled")) {
+    $(this).find("i").removeClass("fa-chevron-right").addClass("fa-chevron-left");
+  } else {
+    $(this).find("i").removeClass("fa-chevron-left").addClass("fa-chevron-right");
+  }
+});
+  $(document).keypress(
+  function(event){
+    if (event.which == '13') {
+      event.preventDefault();
+    }
+});
+  $('.share').click(function(e){
+    var db_data_lenght = '<%= @trip.trip_schedules.length %>'
+    var total_length = $('fieldset').length
+    if(total_length > db_data_lenght){
+      alert('Please save before share it.')
+      return false
+    }
+  })
   $(function() {
     var sortIndex = {};
     $( "#destination-stop-wrapper" ).sortable({

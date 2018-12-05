@@ -28,7 +28,7 @@ class TripsController < ApplicationController
         end
       else
         @trip.update(trip_params)
-        redirect_to trips_path
+        redirect_to trip_path(@trip)
       end
     else
       redirect_to new_user_registration_path(:sharable => true), notice: "You need to signup."

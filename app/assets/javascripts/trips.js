@@ -15,15 +15,7 @@ $(document).on("fields_removed.nested_form_fields", function(event, param) {
   getDirection()
 });
 
-$('[data-toggle="sidebar"]').click(function (e) {
-  e.preventDefault();
-  $("#wrapper").toggleClass("toggled");
-  if ($("#wrapper").hasClass("toggled")) {
-    $(this).find("i").removeClass("fa-chevron-right").addClass("fa-chevron-left");
-  } else {
-    $(this).find("i").removeClass("fa-chevron-left").addClass("fa-chevron-right");
-  }
-});
+
 
 
 function getPlaces()
@@ -112,14 +104,20 @@ function getDirection() {
           var route = response.routes[0];
           var distance = [];
           var duration = [];
+          var totalDistance = 0;
+          var totalDuration = 0;
           // For each route, display summary information.
           for (var i = 0; i < route.legs.length; i++) {
             distance.push(route.legs[i].distance.text)
             duration.push(route.legs[i].duration.value)
+            totalDistance += Number(route.legs[i].distance.text.split(' ')[0]);
+            totalDuration += route.legs[i].duration.value;
           }
         } else {
           window.alert('Directions request failed. Please try again');
         }
+        var totalTime = convertTime(totalDuration)
+        $('.total_display').text("Total " + totalDistance + " kms distance, " + totalTime + " Hrs")
         if( distance != '' || duration != ''){
           for(let i = 0; i < distance.length; i++){
             $('.distance')[0].value = ''

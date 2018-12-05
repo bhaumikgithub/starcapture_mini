@@ -20,16 +20,16 @@
                   <%= render 'layouts/sidebar' %>
                    <div class="main-content align-top">
                       <%= render 'layouts/header' %>
-                      <p class="notice m-0 p-0"><%= notice %></p>
-                      <p class="alert m-0 p-0"><%= alert %></p>
+                      <!-- <p class="notice msg position-absolute"><%#= notice %></p> -->
+                      <!-- <p class="alert msg position-absolute"><%#= alert %></p> -->
                       <%= yield %>
                    </div>
                 </div>
               </div>
             </div>
         <% else %>
-          <p class="notice m-0 p-0"><%= notice %></p>
-          <p class="alert m-0 p-0"><%= alert %></p>
+          <p class="notice"><%= notice %></p>
+          <p class="alert"><%= alert %></p>
           <%= yield %>
         <% end %>
       </div>
