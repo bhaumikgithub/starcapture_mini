@@ -129,12 +129,17 @@
 });
   $('.share').click(function(e){
     var db_data_lenght = '<%= @trip.trip_schedules.length %>'
-    var total_length = $('fieldset').length
+    var total_length = $('.place_search').length
     if(total_length > db_data_lenght){
       alert('Please save before share it.')
       return false
     }
+    if(total_length < db_data_lenght){
+      alert('Please save before share it.')
+      return false
+    }
   })
+
   $(function() {
     var sortIndex = {};
     $( "#destination-stop-wrapper" ).sortable({
