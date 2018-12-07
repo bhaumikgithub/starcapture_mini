@@ -17,7 +17,10 @@
             <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.order(:position) do |ff| %>                
               <div class="destination-info-wrap d-flex">
                 <div class="block time-wrap d-inline-flex">
-                  <%= ff.time_field :time, class: 'w-100 time', id: ff.object.id %>
+                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id %>
+                </div>
+                <div class="block time-wrap d-inline-flex">
+                  <%= ff.time_field :end_time, class: 'w-100 end_time', id: ff.object.id %>
                 </div>
                 <div class="block destination-name d-inline-flex">
                   <div class="d-flex align-items-center">
@@ -146,7 +149,7 @@
       start: function(e, ui) {
       },
       update: function(e, ui) {
-        $( "#destination-stop-wrapper" ).find('.time').each(function(index){
+        $( "#destination-stop-wrapper" ).find('.start_time').each(function(index){
           if(this.id){
             sortIndex[index] = this.id
           }

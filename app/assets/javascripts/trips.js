@@ -1,22 +1,41 @@
 
 
 $(document).on("fields_added.nested_form_fields", function(event, param) {
+ 
+  if($('.start_time').length > 1 && $('.end_time').length > 1){
+    if($('.end_time')[$('.start_time').length -2].value == '')
+      $('.end_time')[$('.start_time').length -2].value = $('.start_time')[$('.start_time').length -2].value
+  }
+   var start_time = $('.start_time')[0].value
+    if(start_time == ''){
+      var date = new Date()
+      var hours = date.getHours() % 12 || 12
+      var minutes = date.getMinutes()
+      var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+      $('.start_time')[0].value = start_time
+    }
   getPlaces()
 });
 
 $(document).on("fields_removed.nested_form_fields", function(event, param) {
   $(document).find('fieldset').each(function(){
     if(this.style['display'] == 'none'){
-    this.elements[0].classList.remove('time')
-    this.elements[1].classList.remove('place_search')
-    this.elements[2].classList.remove('distance')
+    this.elements[0].classList.remove('start_time')
+    this.elements[2].classList.remove('place_search')
+    this.elements[3].classList.remove('distance')
     }
   })
   getDirection()
 });
 
+$(".place_search").change(function(){
+  getDirection()
+})
 
+$(document).on('change', '.end_time', function(){
+  getDirection()
 
+})
 
 function getPlaces()
   {
@@ -119,25 +138,53 @@ function getDirection() {
         var totalTime = convertTime(totalDuration)
         $('.total_display').text("Total " + totalDistance + " kms distance, " + totalTime + " Hrs")
         if( distance != '' || duration != ''){
-          for(let i = 0; i < distance.length; i++){
+          for(let i = 1; i <= distance.length; i++){
             $('.distance')[0].value = ''
-            $('.time')[0].value = ''
-            if(distance[i] != undefined || distance.length > 1)
-              $('.distance')[i+1].value = distance[i]
-            if(duration[i] != undefined || duration.length > 1)
-              $('.time')[i+1].value = convertTime(duration[i])
+            
+
+            var end_time = $('.end_time')[i-1].value
+           
+            if(distance[i] != undefined || distance.length >= 1)
+              $('.distance')[i].value = distance[i-1]
+            if(duration[i] != undefined || duration.length >= 1)
+              $('.start_time')[i].value = convertTime(duration[i-1], end_time)
           }
         }
     });
   }
 }
 
-function convertTime(num){
+function convertTime(num, end_time){
   var totalSeconds = num;
   var hours = Math.floor(totalSeconds / 3600);
   totalSeconds %= 3600;
   var minutes = Math.floor(totalSeconds / 60);
   var seconds = totalSeconds % 60;
-  return  ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+  var date_diffrence =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+  // debugger
+  if(end_time != undefined){
+    return addTimes(date_diffrence, end_time)
+  }
+  else{
+    return date_diffrence
+  }
+}
+
+function timeToMins(time) {
+  var b = time.split(':');
+  return b[0]*60 + +b[1];
+}
+
+function timeFromMins(mins) {
+  function z(n){return (n<10? '0':'') + n;}
+  var h = (mins/60 |0) % 12;
+  var m = mins % 60;
+  return z(h) + ':' + z(m);
+}
+
+
+function addTimes(t0, t1) {
+  // debugger
+  return timeFromMins(timeToMins(t0) + timeToMins(t1));
 }
 

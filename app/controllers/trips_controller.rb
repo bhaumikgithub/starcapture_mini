@@ -38,6 +38,6 @@ class TripsController < ApplicationController
   private
 
   def trip_params
-    params.require(:trip).permit(:name, :description,trip_schedules_attributes: [:time,:place,:distance,:position,:id,:_destroy])
+    params.require(:trip).permit(:name, :description,trip_schedules_attributes: [:start_time,:end_time, :place,:distance,:position,:id,:_destroy])
   end
 end

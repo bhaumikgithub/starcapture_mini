@@ -10,19 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_20_065859) do
+ActiveRecord::Schema.define(version: 2018_12_07_082413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "trip_schedules", force: :cascade do |t|
-    t.datetime "time"
+    t.datetime "start_time"
     t.text "place"
     t.float "distance"
     t.integer "position"
     t.bigint "trip_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "end_time"
     t.index ["trip_id"], name: "index_trip_schedules_on_trip_id"
   end
 
