@@ -136,18 +136,19 @@ function getDirection() {
           window.alert('Directions request failed. Please try again');
         }
         var totalTime = convertTime(totalDuration)
-        $('.total_display').text("Total " + totalDistance + " kms distance, " + totalTime + " Hrs")
+        $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + totalTime + " Hrs")
         if( distance != '' || duration != ''){
           for(let i = 1; i <= distance.length; i++){
             $('.distance')[0].value = ''
-            
-
             var end_time = $('.end_time')[i-1].value
            
             if(distance[i] != undefined || distance.length >= 1)
               $('.distance')[i].value = distance[i-1]
-            if(duration[i] != undefined || duration.length >= 1)
+            if(duration[i] != undefined || duration.length >= 1){
               $('.start_time')[i].value = convertTime(duration[i-1], end_time)
+              $('.end_time')[i].value = $('.start_time')[i].value
+            }
+
           }
         }
     });
@@ -161,7 +162,6 @@ function convertTime(num, end_time){
   var minutes = Math.floor(totalSeconds / 60);
   var seconds = totalSeconds % 60;
   var date_diffrence =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
-  // debugger
   if(end_time != undefined){
     return addTimes(date_diffrence, end_time)
   }
@@ -177,14 +177,13 @@ function timeToMins(time) {
 
 function timeFromMins(mins) {
   function z(n){return (n<10? '0':'') + n;}
-  var h = (mins/60 |0) % 12;
+  var h = (mins/60 |0) % 24;
   var m = mins % 60;
   return z(h) + ':' + z(m);
 }
 
 
 function addTimes(t0, t1) {
-  // debugger
   return timeFromMins(timeToMins(t0) + timeToMins(t1));
 }
 

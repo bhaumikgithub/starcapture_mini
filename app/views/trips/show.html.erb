@@ -1,1 +1,5 @@
-<%= render 'trip_schedule' %>
+<% if current_user.present? %>  
+  <%= render 'trip_schedule' %>
+<% else %>
+  <%= render 'share_trip' %>
+<% end %>
