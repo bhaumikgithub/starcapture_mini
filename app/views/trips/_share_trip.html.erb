@@ -1,65 +1,81 @@
 <div class="main-content d-inline-block align-top">
-          <div class="row m-0">
-            <div class="col-12 p-0">
-              <nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
-                <p class="navbar-brand mb-0">
-                  <label id="title" style="margin-bottom:0px;"><%= @trip.name %></label>
-                  <span id="head_desc" class="d-block"><%= @trip.description %></span>
-                </p>
-              </nav>
-            </div>
-          </div>
-<div class="row m-0 trip_schedules">
-  <div class="col-12 p-0">
-    <div id="wrapper">
-      <div id="sidebar-wrapper">
-          <!-- <div class="name_desc_block pl-3 pr-3">
-            <div class="d-inline-block w-100">
-              <label class="d-bock w-20">Name</label>
-              <%#= f.text_field :name, class: "custom-width-input ",  :required => true %>
-            </div>
-            <div class="w-100 d-inline-block">
-              <label class="d-bock w-20">Description</label>
-              <%#= f.text_field :description, class: "custom-width-input", :required => true %>
-            </div>
-          </div> -->
-          <div id="destination-stop-wrapper" class="list-group">
+  <div class="row m-0">
+    <div class="col-12 p-0">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
+        <p class="navbar-brand mb-0">
+          <label id="title" style="margin-bottom:0px;"><%= @trip.name %></label>
+          <span id="head_desc" class="d-block"><%= @trip.description %></span>
+        </p>
+      </nav>
+    </div>
+  </div>
+  <div class="row m-0 trip_schedules">
+    <div class="col-12 p-0">
+      <div id="wrapper">
+        <div id="sidebar-wrapper">
+          <div id="destination-stop-wrapper" class="list-group pointer-none user-select-none">
+            <!-- map result table header -->
+            <div class="row m-0 map-result-head-row">
+                <div class="col-sm-12 d-table w-100 map-result-tbl pl-0">
+                  <div class='text-white d-table-cell result-cell'>
+                    Start Time
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                   End Time
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                    Place
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                    Total K/m
+                  </div>
+                </div>  
+              </div>
+            <!-- map result table header  -->
             <%  @trip.trip_schedules.each do |trip_schedule|%>
-            <div class="row">
-            <div class='ml-5'>
-              <%= trip_schedule.start_time.strftime('%Y %m %d') %> -
-            </div>
-            <div class='ml-1'>
-              <%= trip_schedule.end_time.strftime('%Y %m %d') %> -
-            </div>
-            <div class='ml-1'>
-              <%= trip_schedule.place %>
-            </div>
-            <div class='ml-1'>
-              <%= trip_schedule.distance %> kms
-            </div>
-</div>
+              <div class="row m-0">
+                <div class="col-sm-12 d-table w-100 map-result-tbl pl-0">
+                  <div class='text-white d-table-cell result-cell'>
+                    <%= trip_schedule&.start_time&.strftime('%H:%M') %> -
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                    <%= trip_schedule&.end_time&.strftime('%H:%M') %>
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                    <%= trip_schedule.place %>
+                  </div>
+
+                  <div class='ml-1 text-white d-table-cell result-cell'>
+                    <%= trip_schedule.distance %> kms
+                  </div>
+                </div>  
+              </div>
             <% end %>
           </div>
           <div class="ml-3 text-white">
             <span class='total_display'></span>
           </div>
-      </div>
-      <div id="page-content-wrapper">
-        <a href class="btn btn-primary route-sidebarmenu" data-toggle="sidebar">
-          <i class="fa fa-chevron-right"> </i>
-        </a>
-        <div class="row h-100 m-0">
-          <div class="col-12 h-100 p-0">
-            <div class="map-wrap h-100">
-              <div id="map"></div>
+        </div>
+        <div id="page-content-wrapper">
+          <a href class="btn btn-primary route-sidebarmenu" data-toggle="sidebar">
+            <i class="fa fa-chevron-right"> </i>
+          </a>
+          <div class="row h-100 m-0">
+            <div class="col-12 h-100 p-0">
+              <div class="map-wrap h-100">
+                <div id="map"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 <script type="text/javascript">
   $(document).ready(function(){  

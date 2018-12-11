@@ -164,6 +164,7 @@ a:focus {
 .main-content {
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 }
 
 #sidebar .list-group .collapse.in,
@@ -754,6 +755,37 @@ label#title{
 #map 
 {
   height: calc(100vh - 63px);
+}
+
+.map-result-tbl .result-cell{
+  text-align: center;
+  padding: 10px 0px;
+  pointer-events: none;
+}
+.map-result-tbl .result-cell:not(:nth-child(3)){
+  width: calc(50% / 3);
+  /*vertical-align: middle;*/
+}
+.map-result-tbl .result-cell:nth-child(3){
+  width: 50%;
+  /*vertical-align: middle;*/
+}
+.pointer-none{
+  pointer-events: none;
+  -webkit-pointer-events: none;
+} 
+.user-select-none{
+  user-select: none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  user-drag: none;
+  -webkit-user-drag:none;
+  -moz-user-drag:none;
+}
+.map-result-head-row .result-cell{
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px 0px 0px;
 }
 /*---------------------*/
 
