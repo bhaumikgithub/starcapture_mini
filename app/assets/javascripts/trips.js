@@ -34,7 +34,6 @@ $(".place_search").change(function(){
 
 $(document).on('change', '.end_time', function(){
   getDirection()
-
 })
 
 function getPlaces()
@@ -135,7 +134,7 @@ function getDirection() {
         } else {
           window.alert('Directions request failed. Please try again');
         }
-        var totalTime = convertTime(totalDuration)
+        var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
         $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + totalTime + " Hrs")
         if( distance != '' || duration != ''){
           for(let i = 1; i <= distance.length; i++){
@@ -187,3 +186,30 @@ function addTimes(t0, t1) {
   return timeFromMins(timeToMins(t0) + timeToMins(t1));
 }
 
+
+function totalTimeCalculation(t1,t2)
+{
+  var time_start = new Date();
+  var time_end = new Date();
+  var value_start = t1.split(':');
+  var value_end = t2.split(':');
+
+  time_start.setHours(value_start[0], value_start[1], 0, 0)
+  time_end.setHours(value_end[0], value_end[1], 0, 0)
+
+  var ms = time_end - time_start
+  return msToTime(ms)
+
+}
+function msToTime(duration) {
+  var milliseconds = parseInt((duration % 1000) / 100),
+    seconds = parseInt((duration / 1000) % 60),
+    minutes = parseInt((duration / (1000 * 60)) % 60),
+    hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes;
+}

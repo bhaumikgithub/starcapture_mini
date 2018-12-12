@@ -16,7 +16,7 @@
           <div id="destination-stop-wrapper" class="list-group pointer-none user-select-none">
             <!-- map result table header -->
             <div class="row m-0 map-result-head-row">
-                <div class="col-sm-12 d-table w-100 map-result-tbl pl-0">
+               <!--  <div class="col-sm-12 d-table w-100 map-result-tbl pl-0">
                   <div class='text-white d-table-cell result-cell'>
                     Start Time
                   </div>
@@ -32,33 +32,37 @@
                   <div class='ml-1 text-white d-table-cell result-cell'>
                     Total K/m
                   </div>
-                </div>  
+                </div>   -->
               </div>
             <!-- map result table header  -->
+                <% trip_distance = 0  %>
             <%  @trip.trip_schedules.each do |trip_schedule|%>
-              <div class="row m-0">
+              <div class="row m-0 m-10">
                 <div class="col-sm-12 d-table w-100 map-result-tbl pl-0">
-                  <div class='text-white d-table-cell result-cell'>
-                    <%= trip_schedule&.start_time&.strftime('%H:%M') %> -
+                  <div class='pl-3 text-white d-table-cell result-cell'>
+                    <%= trip_schedule&.start_time&.strftime('%H:%M') %>
+                    <%= trip_schedule&.end_time.present? ? '-' : '' %>
                   </div>
 
-                  <div class='ml-1 text-white d-table-cell result-cell'>
+                  <div class='text-white d-table-cell result-cell'>
                     <%= trip_schedule&.end_time&.strftime('%H:%M') %>
                   </div>
 
-                  <div class='ml-1 text-white d-table-cell result-cell'>
+                  <div class='text-white d-table-cell result-cell'>
                     <%= trip_schedule.place %>
                   </div>
 
-                  <div class='ml-1 text-white d-table-cell result-cell'>
-                    <%= trip_schedule.distance %> kms
+                  <div class='text-white d-table-cell result-cell'>
+                    <%= trip_schedule.distance.present? ? trip_schedule.distance : '0' %> kms
                   </div>
-                </div>  
+                </div>
+                <% trip_distance = trip_distance.to_f + trip_schedule.distance.to_f %> 
               </div>
             <% end %>
           </div>
-          <div class="ml-3 text-white">
-            <span class='total_display'></span>
+          <div class="ml-3 mt-2 text-white">
+            <span class='total_display'>Total <%= trip_distance.round(2) %> kms,</span>
+            <span id='total_time'></span>
           </div>
         </div>
         <div id="page-content-wrapper">
@@ -82,7 +86,25 @@
     var clipboard = new Clipboard('.clipboard-btn');
     initMap()
     getPlaces()
+    var time_diff = '<%= @trip.trip_schedules[@trip.trip_schedules.length-1].start_time - @trip.trip_schedules[0].start_time   %>'
+    var times = convertTime(time_diff)
+    document.getElementById("total_time").innerHTML= "Total Duration " + times + " Hrs";
   });
+
+  function convertTime(num, end_time){
+  var totalSeconds = num;
+  var hours = Math.floor(totalSeconds / 3600);
+  totalSeconds %= 3600;
+  var minutes = Math.floor(totalSeconds / 60);
+  var seconds = totalSeconds % 60;
+  var date_diffrence =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+  if(end_time != undefined){
+    return addTimes(date_diffrence, end_time)
+  }
+  else{
+    return date_diffrence
+  }
+}
   $('[data-toggle="sidebar"]').click(function (e) {
   e.preventDefault();
   $("#wrapper").toggleClass("toggled");
