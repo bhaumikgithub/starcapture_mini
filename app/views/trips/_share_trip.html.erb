@@ -42,14 +42,12 @@
                   <div class='pl-3 text-white d-table-cell result-cell'>
                     <%= trip_schedule&.start_time&.strftime('%H:%M') %>
                     <%= trip_schedule&.end_time.present? ? '-' : '' %>
-                  </div>
-
-                  <div class='text-white d-table-cell result-cell'>
                     <%= trip_schedule&.end_time&.strftime('%H:%M') %>
                   </div>
 
                   <div class='text-white d-table-cell result-cell'>
-                    <%= trip_schedule.place %>
+                    <div class="place"><%= trip_schedule.place %></div>
+                    <%= hidden_field_tag :place , trip_schedule.place , class: 'place_search' %>
                   </div>
 
                   <div class='text-white d-table-cell result-cell'>

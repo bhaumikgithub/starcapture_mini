@@ -6,15 +6,21 @@ $(document).on("fields_added.nested_form_fields", function(event, param) {
     if($('.end_time')[$('.start_time').length -2].value == '')
       $('.end_time')[$('.start_time').length -2].value = $('.start_time')[$('.start_time').length -2].value
   }
-   var start_time = $('.start_time')[0].value
-    if(start_time == ''){
-      var date = new Date()
-      var hours = date.getHours() % 12 || 12
-      var minutes = date.getMinutes()
-      var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
-      $('.start_time')[0].value = start_time
-    }
+  var start_time = $('.start_time')[0].value
+  if(start_time == ''){
+    var date = new Date()
+    var hours = date.getHours() % 12 || 12
+    var minutes = date.getMinutes()
+    var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+    $('.start_time')[0].value = start_time
+  }
   getPlaces()
+  if($(".place_search")[[param['added_index']-1]].value == ''){
+    alert('Please Enter Destination First')
+    $('fieldset')[$('fieldset').length -1].remove()
+    event.preventDefault();
+    return false
+  }
 });
 
 $(document).on("fields_removed.nested_form_fields", function(event, param) {
@@ -28,7 +34,7 @@ $(document).on("fields_removed.nested_form_fields", function(event, param) {
   getDirection()
 });
 
-$(".place_search").change(function(){
+$(document).on('change', ".place_search", function(){
   getDirection()
 })
 
@@ -206,7 +212,6 @@ function msToTime(duration) {
     seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),
     hours = parseInt((duration / (1000 * 60 * 60)) % 24);
-
   hours = (hours < 10) ? "0" + hours : hours;
   minutes = (minutes < 10) ? "0" + minutes : minutes;
   seconds = (seconds < 10) ? "0" + seconds : seconds;

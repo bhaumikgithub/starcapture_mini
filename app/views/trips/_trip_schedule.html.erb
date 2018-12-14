@@ -14,17 +14,17 @@
             </div>
           </div>
           <div id="destination-stop-wrapper" class="list-group">
-            <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.order(:position) do |ff| %>                
+            <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.pluck(:position).any? ? f.object.trip_schedules.order(:position) : f.object.trip_schedules.order('created_at asc')  do |ff| %>                
               <div class="destination-info-wrap d-flex">
                 <div class="block time-wrap d-inline-flex">
-                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id %>
+                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id ,value: Time.now.strftime('%H:%M')%>
                 </div>
                 <div class="block time-wrap d-inline-flex">
                   <%= ff.time_field :end_time, class: 'w-100 end_time', id: ff.object.id %>
                 </div>
                 <div class="block destination-name d-inline-flex">
                   <div class="d-flex align-items-center">
-                    <%= ff.text_field :place, class: 'place_search', id: ff.object.id %>
+                    <%= ff.text_field :place, class: 'place_search', id: ff.object.id, required:true %>
                   </div>
                 </div>
                 <div class="block hour-list d-inline-flex">
@@ -35,16 +35,19 @@
                     <i class="fa fa-times text-white remove"></i>
                   <% end %>
                 </div>
-                <div class="drag_handle">
-                  <span><i class="fa fa-arrows-alt fa-xs text-white f-17"></i></span>
-                </div>
+                <% if ff.object.place.present?  %>
+                  <div class="drag_handle">
+                    <span><i class="fa fa-arrows-alt fa-xs text-white f-17"></i></span>
+                  </div>
+                <% end %>
               </div>
             <% end %>
           </div>
           <div class="ml-3 text-white">
             <span class='total_display'></span>
           </div>
-          <%= f.add_nested_fields_link :trip_schedules, class: 'add-destination-block text-white d-flex' do %>
+          <div class="add">
+          <%= f.add_nested_fields_link :trip_schedules, class: 'add-destination-block text-white d-flex test' do %>
             <div class="d-inline-flex">
               <div href="javascript:void(0)" class="add-destination-wrap">
                 <i class="fa fa-plus-circle">
@@ -55,6 +58,7 @@
               Add Destination
             </div>
           <% end %>
+          </div>
           <div class="save-location-btn pl-3 pt-2">
             <%= f.submit 'Save', class: 'location-save btn-success' %>
           </div>
