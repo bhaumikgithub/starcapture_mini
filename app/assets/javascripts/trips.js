@@ -15,9 +15,9 @@ $(document).on("fields_added.nested_form_fields", function(event, param) {
     $('.start_time')[0].value = start_time
   }
   getPlaces()
-  if($(".place_search")[[param['added_index']-1]].value == ''){
+  if($(".place_search").length > 1 && $(".place_search")[$(".place_search").length-2].value == ''){
     alert('Please Enter Destination First')
-    $('fieldset')[$('fieldset').length -1].remove()
+    $('fieldset')[$(".place_search").length -1].remove()
     event.preventDefault();
     return false
   }
@@ -34,13 +34,18 @@ $(document).on("fields_removed.nested_form_fields", function(event, param) {
   getDirection()
 });
 
-$(document).on('change', ".place_search", function(){
+$(document).on('change', ".start_time", function(){
+  var current_element = this.name
+  if(current_element.slice( 32,33 ) == '0'){
+    $('.end_time')[0].value = this.value
+  }
   getDirection()
 })
 
 $(document).on('change', '.end_time', function(){
   getDirection()
 })
+
 
 function getPlaces()
   {
@@ -142,6 +147,7 @@ function getDirection() {
         }
         var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
         $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + totalTime + " Hrs")
+        // debugger
         if( distance != '' || duration != ''){
           for(let i = 1; i <= distance.length; i++){
             $('.distance')[0].value = ''
@@ -151,7 +157,10 @@ function getDirection() {
               $('.distance')[i].value = distance[i-1]
             if(duration[i] != undefined || duration.length >= 1){
               $('.start_time')[i].value = convertTime(duration[i-1], end_time)
+              if($('.end_time')[i].value == '')
+              {
               $('.end_time')[i].value = $('.start_time')[i].value
+            }
             }
 
           }
@@ -199,15 +208,15 @@ function totalTimeCalculation(t1,t2)
   var time_end = new Date();
   var value_start = t1.split(':');
   var value_end = t2.split(':');
-
   time_start.setHours(value_start[0], value_start[1], 0, 0)
-  time_end.setHours(value_end[0], value_end[1], 0, 0)
+  time_start.setHours(value_end[0], value_end[1], 0, 0)
 
   var ms = time_end - time_start
   return msToTime(ms)
 
 }
 function msToTime(duration) {
+  if(duration>0){
   var milliseconds = parseInt((duration % 1000) / 100),
     seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),
@@ -217,4 +226,9 @@ function msToTime(duration) {
   seconds = (seconds < 10) ? "0" + seconds : seconds;
 
   return hours + ":" + minutes;
+}
+else
+{
+  return '0'
+}
 }
