@@ -61,6 +61,7 @@ function getPlaces()
   });
 }
 function initMap() {
+
   var marker = [];
   var map = ''
   var current_pos = {lat: 23.0329, lng: 72.5328};
@@ -86,6 +87,7 @@ function initMap() {
 }
 
 function getDirection() {
+  var totalTime = [];
   var places= []
   var source;
   var destination;
@@ -145,9 +147,18 @@ function getDirection() {
         } else {
           window.alert('Directions request failed. Please try again');
         }
-        var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
-        $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + totalTime + " Hrs")
-        // debugger
+        // var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
+        for(var i =0; i < $('.start_time').length; i++){
+          var t = totalTimeCalculation($('.start_time')[i].value, $('.end_time')[i].value)
+          totalTime.push(t)
+        }
+        totalTime.push(convertTime(totalDuration))
+        var  total = '00:00';
+        for(i=0; i< totalTime.length; i++){
+          total = addTimes(total , totalTime[i])
+        }
+        $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + total + " Hrs")
+        $('.total_cacl').val(total)
         if( distance != '' || duration != ''){
           for(let i = 1; i <= distance.length; i++){
             $('.distance')[0].value = ''
@@ -177,7 +188,7 @@ function convertTime(num, end_time){
   var seconds = totalSeconds % 60;
   var date_diffrence =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
   if(end_time != undefined){
-    return addTimes(date_diffrence, end_time)
+    return addGoogleTimes(date_diffrence, end_time)
   }
   else{
     return date_diffrence
@@ -197,7 +208,7 @@ function timeFromMins(mins) {
 }
 
 
-function addTimes(t0, t1) {
+function addGoogleTimes(t0, t1) {
   return timeFromMins(timeToMins(t0) + timeToMins(t1));
 }
 
@@ -208,27 +219,62 @@ function totalTimeCalculation(t1,t2)
   var time_end = new Date();
   var value_start = t1.split(':');
   var value_end = t2.split(':');
+  if((value_end[0] - value_start[0]) < 0)
+    time_end = new Date(time_start.getTime() + 24 * 60 * 60 * 1000)
   time_start.setHours(value_start[0], value_start[1], 0, 0)
-  time_start.setHours(value_end[0], value_end[1], 0, 0)
-
+  time_end.setHours(value_end[0], value_end[1], 0, 0)
   var ms = time_end - time_start
   return msToTime(ms)
-
 }
+
 function msToTime(duration) {
   if(duration>0){
-  var milliseconds = parseInt((duration % 1000) / 100),
+    var milliseconds = parseInt((duration % 1000) / 100),
     seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),
     hours = parseInt((duration / (1000 * 60 * 60)) % 24);
-  hours = (hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-  seconds = (seconds < 10) ? "0" + seconds : seconds;
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+    return hours + ":" + minutes;
+  }
+  else
+    return '0'
+}
 
-  return hours + ":" + minutes;
-}
-else
-{
-  return '0'
-}
+function addTimes (startTime, endTime) {
+  var times = [ 0, 0, 0 ]
+  var max = times.length
+
+  var a = (startTime || '').split(':')
+  var b = (endTime || '').split(':')
+
+  // normalize time values
+  for (var i = 0; i < max; i++) {
+    a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i])
+    b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i])
+  }
+
+  // store time values
+  for (var i = 0; i < max; i++) {
+    times[i] = a[i] + b[i]
+  }
+
+  var hours = times[0]
+  var minutes = times[1]
+  var seconds = times[2]
+
+  if (seconds >= 60) {
+    var m = (seconds / 60) << 0
+    minutes += m
+    seconds -= 60 * m
+  }
+
+  if (minutes >= 60) {
+    var h = (minutes / 60) << 0
+    hours += h
+    minutes -= 60 * h
+  }
+
+  return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2)
 }

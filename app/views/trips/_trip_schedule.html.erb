@@ -17,7 +17,7 @@
             <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.pluck(:position).any? ? f.object.trip_schedules.order(:position) : f.object.trip_schedules.order('created_at asc')  do |ff| %>                
               <div class="destination-info-wrap d-flex">
                 <div class="block time-wrap d-inline-flex">
-                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id ,value: Time.now.strftime('%H:%M')%>
+                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id ,value: ff.object.start_time.present? ? ff.object.start_time.strftime('%H:%M') : Time.now.strftime('%H:%M')%>
                 </div>
                 <div class="block time-wrap d-inline-flex">
                   <%= ff.time_field :end_time, class: 'w-100 end_time', id: ff.object.id %>
@@ -59,6 +59,7 @@
             </div>
           <% end %>
           </div>
+          <%= f.hidden_field :total_duration, class: 'total_cacl' %>
           <div class="save-location-btn pl-3 pt-2">
             <%= f.submit 'Save', class: 'location-save btn-success' %>
           </div>
@@ -118,7 +119,6 @@
     var clipboard = new Clipboard('.clipboard-btn');
     initMap()
     getPlaces()
-
 
   });
   $('[data-toggle="sidebar"]').click(function (e) {
