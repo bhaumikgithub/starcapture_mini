@@ -344,6 +344,10 @@ a:focus {
   margin-bottom: 5px;
   font-weight: bold;
 }
+.delete-icon-block{
+  right: 30px;
+  bottom: -25px;
+}
 .main-content .triproute-blockwrap .day {
   font-size: 16px;
   line-height: 20px;
