@@ -1,5 +1,6 @@
 class TripsController < ApplicationController
   before_action :authenticate_user!, :except => [:show, :update]
+  before_action :find_trip, :only => [:show, :update, :destroy]
 
   def index
     @trips = current_user.trips
@@ -10,7 +11,6 @@ class TripsController < ApplicationController
   end
 
   def show
-    @trip = Trip.find_by(id: params[:id])
   end
 
   def create
@@ -20,7 +20,6 @@ class TripsController < ApplicationController
   
   def update
     if current_user
-      @trip = Trip.find_by(id: params[:id])
       if params[:data]
         params[:data].each do |key , value|
           a = TripSchedule.find_by(id: value)
@@ -35,7 +34,16 @@ class TripsController < ApplicationController
     end
   end
 
+  def destroy
+    @trip.destroy!
+    redirect_to trips_path
+  end
+
   private
+
+  def find_trip
+    @trip = Trip.find_by(id: params[:id])
+  end
 
   def trip_params
     params.require(:trip).permit(:name, :description,:total_duration, trip_schedules_attributes: [:start_time,:end_time, :place,:distance,:position,:id,:_destroy])

@@ -43,6 +43,8 @@ $(document).on('change', ".start_time", function(){
 })
 
 $(document).on('change', '.end_time', function(){
+  if(this.value == '')
+    this.value = $(document).find('#'+this.id)[0].value
   getDirection()
 })
 
@@ -105,6 +107,7 @@ function getDirection() {
   $(".place_search").each(function(){
     places.push(this.value)
   })
+  places = places.filter(Boolean)
   if(places.length == 1)
   {
     source = places[0]
@@ -145,7 +148,7 @@ function getDirection() {
             totalDuration += route.legs[i].duration.value;
           }
         } else {
-          window.alert('Directions request failed. Please try again');
+          window.alert('Please try again');
         }
         // var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
         for(var i =0; i < $('.start_time').length; i++){
