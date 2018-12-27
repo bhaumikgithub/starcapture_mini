@@ -1,5 +1,4 @@
 
-
 $(document).on("fields_added.nested_form_fields", function(event, param) {
  
   if($('.start_time').length > 1 && $('.end_time').length > 1){
@@ -13,6 +12,8 @@ $(document).on("fields_added.nested_form_fields", function(event, param) {
     var minutes = date.getMinutes()
     var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
     $('.start_time')[0].value = start_time
+    $('.duration')[0].value = '00:00'
+
   }
   getPlaces()
   if($(".place_search").length > 1 && $(".place_search")[$(".place_search").length-2].value == ''){
@@ -27,8 +28,9 @@ $(document).on("fields_removed.nested_form_fields", function(event, param) {
   $(document).find('fieldset').each(function(){
     if(this.style['display'] == 'none'){
     this.elements[0].classList.remove('start_time')
-    this.elements[2].classList.remove('place_search')
-    this.elements[3].classList.remove('distance')
+    this.elements[3].classList.remove('place_search')
+    this.elements[4].classList.remove('distance')
+    $(this).find('span').removeClass('place_order')
     }
   })
   getDirection()
@@ -38,15 +40,47 @@ $(document).on('change', ".start_time", function(){
   var current_element = this.name
   if(current_element.slice( 32,33 ) == '0'){
     $('.end_time')[0].value = this.value
+    $($('.total_time')[0]).text(this.value + ' - ' + this.value)
   }
+  for(let i = 0; i < $('.duration').length; i++){
+    if($('.duration')[i].value == ''){
+      $('.end_time')[i].value = $('.start_time')[i].value
+      $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+    }
+    else{
+      var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+      $('.end_time')[i].value = total
+      $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+    }
+  }
+  var start_point = this.name.replace(/[\[\]']/g,'_' ).split('__')[1]
+  getDirection(start_point)
+})
+
+$(document).on('change', '.duration', function(){
+
+  // for(let i = 0; i < $('.duration').length; i++){
+  //   if($('.duration')[i].value == ''){
+  //     $('.end_time')[i].value = $('.start_time')[i].value
+  //     $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + this.value)
+  //   }
+  //   else{
+  //     var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+  //     $('.end_time')[i].value = total
+  //     $($('.total_time')[i]).text($('.start_time')[i].value + ' - '+ total)
+
+  //   }
+  // }
   getDirection()
 })
 
-$(document).on('change', '.end_time', function(){
-  if(this.value == '')
-    this.value = $(document).find('#'+this.id)[0].value
-  getDirection()
-})
+
+// $(document).on('change', '.end_time', function(){
+//   if(this.value == '')
+//     this.value = $(document).find('#'+this.id)[0].value
+
+//   getDirection()
+// })
 
 
 function getPlaces()
@@ -62,6 +96,8 @@ function getPlaces()
     });
   });
 }
+
+
 function initMap() {
 
   var marker = [];
@@ -88,7 +124,7 @@ function initMap() {
   }
 }
 
-function getDirection() {
+function getDirection(start_point) {
   var totalTime = [];
   var places= []
   var source;
@@ -110,7 +146,7 @@ function getDirection() {
   places = places.filter(Boolean)
   if(places.length == 1)
   {
-    source = places[0]
+    source = start_point || places[0]
     destination = places[0]
     
   }
@@ -125,6 +161,8 @@ function getDirection() {
       });
     }
   }
+ 
+
  if(source != '' || destination != ''){
     directionsService.route({
       origin: source,
@@ -138,17 +176,19 @@ function getDirection() {
           var route = response.routes[0];
           var distance = [];
           var duration = [];
+          var google_distance = []
           var totalDistance = 0;
           var totalDuration = 0;
           // For each route, display summary information.
           for (var i = 0; i < route.legs.length; i++) {
             distance.push(route.legs[i].distance.text)
             duration.push(route.legs[i].duration.value)
-            totalDistance += Number(route.legs[i].distance.text.split(' ')[0]);
+            google_distance.push(route.legs[i].distance.text + ', ' + route.legs[i].duration.text)
+            totalDistance += Number(route.legs[i].distance.text.split(' ')[0].replace(/\,/g,''));
             totalDuration += route.legs[i].duration.value;
           }
         } else {
-          window.alert('Please try again');
+          window.alert('Please enter valid location');
         }
         // var totalTime = totalTimeCalculation($('.start_time')[0].value, $('.start_time')[$('.start_time').length -1].value)
         for(var i =0; i < $('.start_time').length; i++){
@@ -156,29 +196,62 @@ function getDirection() {
           totalTime.push(t)
         }
         totalTime.push(convertTime(totalDuration))
+        
         var  total = '00:00';
         for(i=0; i< totalTime.length; i++){
           total = addTimes(total , totalTime[i])
         }
+        
         $('.total_display').text("Total " + totalDistance.toFixed(2) + " kms distance, " + total + " Hrs")
         $('.total_cacl').val(total)
+
+        var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+        for(let i = 0; i < $('.place_search').length; i++){
+          if( $('.start_time').length > 2){
+            if($('.duration')[i].value == ''){
+              $('.duration')[i].value == '00:00'
+              $('.end_time')[i].value = $('.start_time')[i].value
+              $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+            }
+            else{
+              var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+              $('.end_time')[i].value = total
+              $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+            }
+          }
+          $($('.google_display')[i-1]).text(google_distance[i-1])
+          $($('.place_order')[i]).text(alphabet[i])
+        }
         if( distance != '' || duration != ''){
-          for(let i = 1; i <= distance.length; i++){
-            $('.distance')[0].value = ''
-            var end_time = $('.end_time')[i-1].value
-           
+          for(var i = parseInt(start_point)+1 || 1; i <= distance.length; i++){
+            // $('.distance')[0].value = ''
+            var end_time = $('.end_time')[i-1].value 
             if(distance[i] != undefined || distance.length >= 1)
               $('.distance')[i].value = distance[i-1]
             if(duration[i] != undefined || duration.length >= 1){
               $('.start_time')[i].value = convertTime(duration[i-1], end_time)
-              if($('.end_time')[i].value == '')
-              {
-              $('.end_time')[i].value = $('.start_time')[i].value
             }
-            }
-
           }
         }
+
+        for(let i = 0; i < $('.place_search').length; i++){
+
+          if( $('.start_time').length > 2){
+            if($('.duration')[i].value == ''){
+              $('.duration')[i].value == '00:00'
+              $('.end_time')[i].value = $('.start_time')[i].value
+              $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+            }
+            else{
+              var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+              $('.end_time')[i].value = total
+              $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+            }
+          }
+          $($('.place_order')[i]).text(alphabet[i])
+          $($('.google_display')[i-1]).text(google_distance[i-1])
+        }
+
     });
   }
 }
@@ -279,5 +352,15 @@ function addTimes (startTime, endTime) {
     minutes -= 60 * h
   }
 
-  return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2)
+  return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2)
 }
+
+
+// function timeDiff(start, end){
+//   var startTime=moment("03:12", "HH:mm");
+//   var endTime=moment("23:12", "HH:mm");
+//   var duration = moment.duration(endTime.diff(startTime));
+//   var hours = parseInt(duration.asHours());
+//   var minutes = parseInt(duration.asMinutes())%60;
+//   return hours + ":" + minutes
+// }

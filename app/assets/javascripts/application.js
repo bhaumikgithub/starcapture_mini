@@ -20,4 +20,5 @@
 //= require activestorage
 //= require nested_form_fields
 //= require clipboard
+//= require moment
 //= require_tree .

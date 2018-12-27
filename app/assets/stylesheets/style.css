@@ -90,6 +90,12 @@ a:focus {
 .f-bold {
   font-weight: bold;
 }
+.f-20{
+  font-size: 20px;
+}
+.mt-10{
+  margin-top: 10px;
+}
 
 .text-white {
   color: #fff !important;
@@ -215,6 +221,9 @@ a:focus {
   padding-left: 40px;
 }
 
+.clr_gray{
+  background-color: #D3D3D3 !important;
+}
 @media (max-width:48em) {
 
   /* overlay sub levels on small screens */
@@ -512,7 +521,12 @@ a:focus {
   word-break: break-all;
   font-family: 'open_sansregular', helvetica;
 }
-
+.destination-info-wrap .time-wrap:nth-child(3){
+  max-width: 60px!important;
+  min-width: 7px!important;
+      padding-right: 8px;
+    padding-left: 0px;
+}
 .destination-info-wrap .time-wrap,
 .destination-info-wrap .hour-list {
   max-width: 70px;

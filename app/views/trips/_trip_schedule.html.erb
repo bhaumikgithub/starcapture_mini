@@ -3,6 +3,7 @@
     <div id="wrapper">
       <div id="sidebar-wrapper">
         <%= form_for @trip do |f| %>
+        <% alphabet = ('a'..'z').to_a %>
           <div class="name_desc_block pl-3 pr-3">
             <div class="d-inline-block w-100">
               <label class="d-bock w-20">Name</label>
@@ -14,33 +15,40 @@
             </div>
           </div>
           <div id="destination-stop-wrapper" class="list-group">
+            <% arr = [] %>
             <%= f.nested_fields_for :trip_schedules, f.object.trip_schedules.pluck(:position).any? ? f.object.trip_schedules.order(:position) : f.object.trip_schedules.order('created_at asc')  do |ff| %>                
-              <div class="destination-info-wrap d-flex">
+              <div class="destination-info-wrap d-flex <%= ff.object.id %>">
                 <div class="block time-wrap d-inline-flex">
-                  <%= ff.time_field :start_time, class: 'w-100 start_time', id: ff.object.id ,value: ff.object.start_time.present? ? ff.object.start_time.strftime('%H:%M') : Time.now.strftime('%H:%M')%>
+                  <%= ff.time_field :start_time, class: "w-100 start_time", id: ff.object.id ,value: ff.object.start_time.present? ? ff.object.start_time.strftime('%H:%M') : '' %>
                 </div>
                 <div class="block time-wrap d-inline-flex">
-                  <%= ff.time_field :end_time, class: 'w-100 end_time', id: ff.object.id %>
+                  <%= ff.time_field :duration, class: "w-100 duration", id: ff.object.id  %>
                 </div>
+                <!-- <div class="block time-wrap d-inline-flex text-muted clr_gray"> -->
+                  <%= ff.hidden_field :end_time, class: "w-25 end_time", id: ff.object.id ,readonly: true%>
+                <!-- </div> -->
                 <div class="block destination-name d-inline-flex">
                   <div class="d-flex align-items-center">
-                    <%= ff.text_field :place, class: 'place_search', id: ff.object.id, required:true %>
+                    <%= ff.text_field :place, class: "place_search", id: ff.object.id , required:true %>
                   </div>
                 </div>
-                <div class="block hour-list d-inline-flex">
-                  <%= ff.text_field :distance, class: 'distance' , id: ff.object.id%>
-                </div>
+                <!-- <div class="block hour-list d-inline-flex distance_div"> -->
+                <%= ff.hidden_field :distance, class: "distance" , id: ff.object.id %>
+                <span class="place_order text-white f-20 mt-10"></span>
                 <div class="remove-icon-wrap">
                   <%= ff.remove_nested_fields_link class: 'remove_blocks' do %>
                     <i class="fa fa-times text-white remove"></i>
                   <% end %>
                 </div>
-                <% if ff.object.place.present?  %>
-                  <div class="drag_handle">
-                    <span><i class="fa fa-arrows-alt fa-xs text-white f-17"></i></span>
-                  </div>
-                <% end %>
+                <%# if ff.object.place.present?  %>
+                  <!-- <div class="drag_handle"> -->
+                    <!-- <span><i class="fa fa-arrows-alt fa-xs text-white f-17"></i></span> -->
+                  <!-- </div> -->
+                <%# end %>
+
               </div>
+              <span class='total_time text-white ml-4 '></span>
+              <span class="google_display text-white  float-right mr-5"></span>
             <% end %>
           </div>
           <div class="ml-3 text-white">
@@ -119,6 +127,7 @@
     var clipboard = new Clipboard('.clipboard-btn');
     initMap()
     getPlaces()
+
 
   });
   $('[data-toggle="sidebar"]').click(function (e) {

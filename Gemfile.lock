@@ -130,6 +130,8 @@ GEM
     mini_racer (0.2.4)
       libv8 (>= 6.3)
     minitest (5.11.3)
+    momentjs-rails (2.20.1)
+      railties (>= 3.1)
     msgpack (1.2.4)
     multi_json (1.13.1)
     nested_form_fields (0.8.2)
@@ -254,6 +256,7 @@ DEPENDENCIES
   letter_avatar
   listen (>= 3.0.5, < 3.2)
   mini_racer
+  momentjs-rails
   nested_form_fields
   pg (>= 0.18, < 2.0)
   pry
