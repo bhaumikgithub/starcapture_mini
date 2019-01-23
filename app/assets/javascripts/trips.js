@@ -7,13 +7,25 @@ $(document).on("fields_added.nested_form_fields", function(event, param) {
   }
   var start_time = $('.start_time')[0].value
   if(start_time == ''){
-    var date = new Date()
-    var hours = date.getHours() % 12 || 12
-    var minutes = date.getMinutes()
-    var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+    // var date = new Date()
+    // var hours = date.getHours() % 12 || 12
+    // var minutes = date.getMinutes()
+    // var start_time =   ("0" + hours).slice(-2) + ':' + ("0" + minutes).slice(-2)
+    var start_time = new moment().format("HH:mm");
     $('.start_time')[0].value = start_time
     $('.duration')[0].value = '00:00'
 
+  }
+  for(let i = 0; i < $('.duration').length; i++){
+    if($('.duration')[i].value == ''){
+      $('.end_time')[i].value = $('.start_time')[i].value
+      $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+    }
+    else{
+      var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+      $('.end_time')[i].value = total
+      $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+    }
   }
   getPlaces()
   if($(".place_search").length > 1 && $(".place_search")[$(".place_search").length-2].value == ''){
@@ -25,15 +37,30 @@ $(document).on("fields_added.nested_form_fields", function(event, param) {
 });
 
 $(document).on("fields_removed.nested_form_fields", function(event, param) {
-  $(document).find('fieldset').each(function(){
-    if(this.style['display'] == 'none'){
-    this.elements[0].classList.remove('start_time')
-    this.elements[3].classList.remove('place_search')
-    this.elements[4].classList.remove('distance')
-    $(this).find('span').removeClass('place_order')
+  for(let i = 0; i < $('fieldset').length; i++){
+  // $(document).find('fieldset').each(function(){
+    if($('fieldset')[i].style['display'] == 'none'){
+      // $('fieldset')[i].remove()
+    $('fieldset')[i].elements[0].classList.remove('start_time')
+    $('fieldset')[i].elements[1].classList.remove('duration')
+    $('fieldset')[i].elements[3].classList.remove('place_search')
+    $('fieldset')[i].elements[4].classList.remove('distance')
+    $($('fieldset')[i]).find('span').removeClass('place_order')
     }
-  })
+  }
+  // })
   getDirection()
+   for(let i = 0; i < $('.duration').length; i++){
+    if($('.duration')[i].value == ''){
+      $('.end_time')[i].value = $('.start_time')[i].value
+      $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+    }
+    else{
+      var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+      $('.end_time')[i].value = total
+      $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+    }
+  }
 });
 
 $(document).on('change', ".start_time", function(){
@@ -59,6 +86,9 @@ $(document).on('change', ".start_time", function(){
 
 $(document).on('change', '.duration', function(){
 
+  getDirection()
+  
+
   // for(let i = 0; i < $('.duration').length; i++){
   //   if($('.duration')[i].value == ''){
   //     $('.end_time')[i].value = $('.start_time')[i].value
@@ -71,7 +101,6 @@ $(document).on('change', '.duration', function(){
 
   //   }
   // }
-  getDirection()
 })
 
 
@@ -251,6 +280,17 @@ function getDirection(start_point) {
           $($('.place_order')[i]).text(alphabet[i])
           $($('.google_display')[i-1]).text(google_distance[i-1])
         }
+        for(let i = 0; i < $('.duration').length; i++){
+    if($('.duration')[i].value == ''){
+      $('.end_time')[i].value = $('.start_time')[i].value
+      $($('.total_time')[i]).text($('.start_time')[i].value + ' - ' + $('.start_time')[i].value)
+    }
+    else{
+      var total = moment.utc((moment.duration($('.duration')[i].value).add($('.start_time')[i].value)).asMilliseconds()).format("HH:mm")
+      $('.end_time')[i].value = total
+      $($('.total_time')[i]).text($('.start_time')[i].value + '- ' + total)
+    }
+  }
 
     });
   }

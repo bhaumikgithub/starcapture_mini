@@ -103,6 +103,7 @@ a:focus {
 
 .wrapper {
   display: flex;
+  overflow-x: hidden;
 }
 .trip_schedules .wrapper{
   overflow: hidden;
@@ -170,7 +171,7 @@ a:focus {
 .main-content {
   width: 100%;
   height: 100vh;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 #sidebar .list-group .collapse.in,
